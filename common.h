@@ -42,5 +42,11 @@ std::ostream& operator << (std::ostream& out, const vector3& v);
 
 typedef vector3 color;
 
+typedef struct {
+	vector3 origin;
+	vector3 direction;
+} ray_t;
+
+
 
 #endif
