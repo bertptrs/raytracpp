@@ -12,6 +12,7 @@ class OutputBitmap {
 		OutputBitmap(unsigned int width, unsigned int height) : width(width), height(height) {};
 
 	public:
+		virtual ~OutputBitmap() {};
 		unsigned int getWidth() const { return width; };
 		unsigned int getHeight() const { return height; };
 
