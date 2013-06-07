@@ -15,15 +15,13 @@ class OutputBitmap {
 		unsigned int getWidth() const { return width; };
 		unsigned int getHeight() const { return height; };
 
-		void setPixel(unsigned int x, unsigned int y, const color& c) = 0;
-		void getPixel(unsigned int x, unsigned int y, color& c) = 0;
-		color getPixel(unsigned int x, unsigned int y) = 0;
+		virtual void setPixel(unsigned int x, unsigned int y, const color& c) = 0;
+		virtual void getPixel(unsigned int x, unsigned int y, color& c) const = 0;
+		virtual color getPixel(unsigned int x, unsigned int y) const = 0;
 
-		void commit() = 0;
-
-		void write(ostream& output) = 0;
+		virtual void write(ostream& output) const = 0;
 };
 
-operator << (ofstream& output, OutputBitmap bitmap) {
-	bitmap.write(output);
-}
+ostream& operator << (ostream& output, OutputBitmap* bitmap);
+
+#endif
