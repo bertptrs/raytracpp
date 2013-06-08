@@ -7,7 +7,7 @@ class Sphere : public Primitive {
 	private:
 		const vector3 pos;
 		const double radius;
-		double intersect(const ray_t& ray, vector3& hit, vector3& normal);
+		hitresult_t intersect(const ray_t& ray, double& distance, vector3& hit, vector3& normal);
 
 	public:
 		Sphere(const vector3& pos, double radius);
