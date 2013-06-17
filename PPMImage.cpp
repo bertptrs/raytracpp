@@ -18,7 +18,7 @@ PPMImage::~PPMImage() {
 	delete[] bitmap;
 }
 
-void PPMImage::setPixel(unsigned int x, unsigned int y, const color& c) {
+void PPMImage::setPixel(unsigned int x, unsigned int y, const color_t& c) {
 	uint32_t r,g,b;
 	r = max(0, min(CHANNEL_MAX, (int) (c.channels.r * CHANNEL_MAX)));
 	g = max(0, min(CHANNEL_MAX, (int) (c.channels.g * CHANNEL_MAX)));
@@ -26,20 +26,20 @@ void PPMImage::setPixel(unsigned int x, unsigned int y, const color& c) {
 	bitmap[x][y] = (r << 16) | (g << 8) | b;
 }
 
-void PPMImage::getPixel(unsigned int x, unsigned int y, color& c) const {
+void PPMImage::getPixel(unsigned int x, unsigned int y, color_t& c) const {
 	uint32_t color = bitmap[x][y];
 	c.channels.r = ((color >> 16) & 0xff) / CHANNEL_MAX;
 	c.channels.g = ((color >> 8) & 0xff) / CHANNEL_MAX;
 	c.channels.b = (color & 0xff) / CHANNEL_MAX;
 }
 
-color PPMImage::getPixel(unsigned int x, unsigned int y) const {
+color_t PPMImage::getPixel(unsigned int x, unsigned int y) const {
 	uint32_t c = bitmap[x][y];
 	double r = ((c >> 16) & 0xff) / CHANNEL_MAX;
 	double g = ((c >> 8) & 0xff) / CHANNEL_MAX;
 	double b = (c & 0xff) / CHANNEL_MAX;
 	
-	return color(r,g,b);
+	return color_t(r,g,b);
 }
 
 void PPMImage::write(ostream& output) const {

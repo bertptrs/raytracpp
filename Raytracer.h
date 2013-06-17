@@ -18,15 +18,15 @@ class Raytracer {
 		OutputBitmap* const bitmap;
 		list<Primitive*> scene;
 		ray_t camera;
-		static const vector3 UP;
+		static const vector3_t UP;
 
-		vector3 xDir, yDir;
+		vector3_t xDir, yDir;
 		double scale;
 
 		void initScreen();
-		color getPixel(double sX, double sY);
+		color_t getPixel(double sX, double sY);
 
-		Primitive* trace(const ray_t& ray, vector3& hit, vector3& normal, color& color);
+		Primitive* trace(const ray_t& ray, vector3_t& hit, vector3_t& normal, color_t& color_t);
 
 	public:
 		Raytracer(OutputBitmap* bm);

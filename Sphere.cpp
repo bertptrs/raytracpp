@@ -3,10 +3,10 @@
 
 using namespace std;
 
-Sphere::Sphere(const vector3& pos, double radius) : pos(pos), radius(radius) 
+Sphere::Sphere(const vector3_t& pos, double radius) : pos(pos), radius(radius) 
 {}
 
-hitresult_t Sphere::intersect(const ray_t& ray, double& distance, vector3& hit, vector3& normal) {
+hitresult_t Sphere::intersect(const ray_t& ray, double& distance, vector3_t& hit, vector3_t& normal) {
 	hitresult_t hitresult;
 	double a,b,c,d;
 	a = ray.direction.squareLength();

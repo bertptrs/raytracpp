@@ -3,79 +3,79 @@
 
 using namespace std;
 
-vector3::vector3(double x, double y, double z) {
+vector3_t::vector3_t(double x, double y, double z) {
 	coords.x = x;
 	coords.y = y;
 	coords.z = z;
 }
 
-void vector3::set(double x, double y, double z) {
+void vector3_t::set(double x, double y, double z) {
 	coords.x = x;
 	coords.y = y;
 	coords.z = z;
 }
 
-void vector3::normalize() {
+void vector3_t::normalize() {
 	double l = 1 / length();
 	for(int i = 0; i < DIMENSION; i++) {
 		cells[i] *= l;
 	}
 }
 
-double vector3::length() const {
+double vector3_t::length() const {
 	return sqrt(squareLength());
 }
 
-double vector3::squareLength() const {
+double vector3_t::squareLength() const {
 	return dot(*this);
 }
 
-double vector3::dot(const vector3& other) const {
+double vector3_t::dot(const vector3_t& other) const {
 	double r = 0;
 	for(int i = 0; i < DIMENSION; i++)
 		r += cells[i] * other.cells[i];
 	return r;
 }
 
-vector3 vector3::cross(const vector3& b) const {
-	return vector3( coords.y * b.coords.z - coords.z * b.coords.y, coords.z * b.coords.x - coords.x * b.coords.z, coords.x * b.coords.y - coords.y * b.coords.x );
+vector3_t vector3_t::cross(const vector3_t& b) const {
+	return vector3_t( coords.y * b.coords.z - coords.z * b.coords.y, coords.z * b.coords.x - coords.x * b.coords.z, coords.x * b.coords.y - coords.y * b.coords.x );
 }
 
-void vector3::operator += (const vector3& a) {
+void vector3_t::operator += (const vector3_t& a) {
 	for(int i = 0; i < DIMENSION; i++)
 		cells[i] += a.cells[i];
 }
 
-void vector3::operator += (vector3 const * const a) {
+void vector3_t::operator += (vector3_t const * const a) {
 	for(int i = 0; i < DIMENSION; i++)
 		cells[i] += a->cells[i];
 }
 
-void vector3::operator -= (const vector3& a) {
+void vector3_t::operator -= (const vector3_t& a) {
 	for(int i = 0; i < DIMENSION; i++)
 		cells[i] -= a.cells[i];
 }
 
-void vector3::operator -= (vector3 const * const a) {
+void vector3_t::operator -= (vector3_t const * const a) {
 	for(int i = 0; i < DIMENSION; i++)
 		cells[i] -= a->cells[i];
 }
-void vector3::operator *= (const vector3& a) {
+void vector3_t::operator *= (const vector3_t& a) {
 	for(int i = 0; i < DIMENSION; i++)
 		cells[i] *= a.cells[i];
 }
 
-void vector3::operator *= (vector3 const * const a) {
+void vector3_t::operator *= (vector3_t const * const a) {
 	for(int i = 0; i < DIMENSION; i++)
 		cells[i] *= a->cells[i];
 }
 
-void vector3::operator *= (double factor) {
+void vector3_t::operator *= (double factor) {
 	for(int i = 0; i < DIMENSION; i++)
 		cells[i] *= factor;
 }
 
-ostream& operator << (ostream& out, const vector3& v) {
+ostream& operator << (ostream& out, const vector3_t& v) {
 	out << "( " << v.cells[0];
 	for(int i = 1; i < v.DIMENSION; i++)
 		out << ", " << v.cells[i];
@@ -83,28 +83,28 @@ ostream& operator << (ostream& out, const vector3& v) {
 	return out;
 }
 
-vector3 operator + (const vector3& a, const vector3& b) {
-	vector3 v(a.coords.x + b.coords.x,
+vector3_t operator + (const vector3_t& a, const vector3_t& b) {
+	vector3_t v(a.coords.x + b.coords.x,
 			a.coords.y + b.coords.y,
 			a.coords.z + b.coords.z);
 	return v;
 }
 
-vector3 operator - (const vector3& a, const vector3& b) {
-	vector3 v(a.coords.x - b.coords.x,
+vector3_t operator - (const vector3_t& a, const vector3_t& b) {
+	vector3_t v(a.coords.x - b.coords.x,
 			a.coords.y - b.coords.y,
 			a.coords.z - b.coords.z);
 	return v;
 }
 
-vector3 operator * (const vector3& a, const vector3& b) {
-	vector3 c = a;
+vector3_t operator * (const vector3_t& a, const vector3_t& b) {
+	vector3_t c = a;
 	c *= b;
 	return c;
 }
 
-vector3 operator * (double factor, const vector3& original) {
-	vector3 b = original;
+vector3_t operator * (double factor, const vector3_t& original) {
+	vector3_t b = original;
 	b *= factor;
 	return b;
 }

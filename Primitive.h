@@ -11,11 +11,11 @@ typedef enum {
 
 class Primitive {
 	protected:
-		virtual hitresult_t intersect(const ray_t& ray, double& distance, vector3& hit, vector3& normal) = 0;
+		virtual hitresult_t intersect(const ray_t& ray, double& distance, vector3_t& hit, vector3_t& normal) = 0;
 	public:
 		virtual ~Primitive() {};
 		
-		hitresult_t doIntersect(const ray_t& ray, double& distance, vector3& hit, vector3& normal);
+		hitresult_t doIntersect(const ray_t& ray, double& distance, vector3_t& hit, vector3_t& normal);
 };
 
 #endif
