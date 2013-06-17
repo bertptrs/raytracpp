@@ -5,7 +5,8 @@ OBJS=common.o\
 	 OutputBitmap.o\
 	 PPMImage.o\
 	 Primitive.o\
-	 Sphere.o
+	 Sphere.o\
+	 Raytracer.o
 
 .PHONY: all clean run
 
@@ -35,3 +36,5 @@ Primitive.o: Primitive.cpp Primitive.h common.h
 
 Sphere.o: Sphere.cpp Sphere.h Primitive.h common.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+Raytracer.o: Raytracer.cpp Raytracer.h common.h Primitive.h
