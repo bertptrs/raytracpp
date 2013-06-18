@@ -6,18 +6,27 @@ OBJS=common.o\
 	 PPMImage.o\
 	 Primitive.o\
 	 Sphere.o\
-	 Raytracer.o
+	 Raytracer.o\
+	 Material.o
+
+OBJ_SRC=$(patsubst %.o, %.cpp, $(OBJS))
 
 .PHONY: all clean run
 
-all: test
+all: config test
 
 run: all
 	./test
 	eog result.ppm &
 
+config: .depends
+
+.depends: $(OBJ_SRC)
+	touch $@
+	gccmakedep $(CXXFLAGS) -f $@ $(OBJ_SRC)
+
 clean:
-	$(RM) test *.o
+	$(RM) test *.o .depends*
 
 test: test.cpp $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
@@ -38,4 +47,7 @@ Sphere.o: Sphere.cpp Sphere.h Primitive.h common.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 Raytracer.o: Raytracer.cpp Raytracer.h common.h Primitive.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+Material.o: Material.cpp Material.h common.h Primitive.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
