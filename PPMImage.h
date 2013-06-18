@@ -2,7 +2,7 @@
 #define PPMIMAGE_H
 
 #include "OutputBitmap.h"
-#include <cstdint>
+#include "stdint.h"
 
 class PPMImage : public OutputBitmap {
 	private:

@@ -1,4 +1,12 @@
+#Binaries
 *.o
 test
+
+#Resulting images
 *.ppm
+
+#Annoying vim swap files
 *.swp
+
+#Makefile dependencies
+.depends

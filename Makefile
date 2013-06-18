@@ -9,45 +9,29 @@ OBJS=common.o\
 	 Raytracer.o\
 	 Material.o
 
+DEPFILE = .depends
+
 OBJ_SRC=$(patsubst %.o, %.cpp, $(OBJS))
+OBJ_HEAD=$(patsubst %.o, %.h, $(OBJS))
 
-.PHONY: all clean run
+.PHONY: all clean run config
 
-all: config test
+all: $(DEPFILE) test
+
+clean:
+	$(RM) test *.o .depends*
 
 run: all
 	./test
 	eog result.ppm &
 
-config: .depends
-
-.depends: $(OBJ_SRC)
-	touch $@
-	gccmakedep $(CXXFLAGS) -f $@ $(OBJ_SRC)
-
-clean:
-	$(RM) test *.o .depends*
+$(DEPFILE): $(OBJ_SRC) $(OBJ_HEAD)
+	gcc -MM $(OBJ_SRC) > $@
 
 test: test.cpp $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-common.o: common.cpp common.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $< -c -o $@
 
-OutputBitmap.o: OutputBitmap.cpp OutputBitmap.h common.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-PPMImage.o: PPMImage.cpp PPMImage.h OutputBitmap.h common.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-Primitive.o: Primitive.cpp Primitive.h common.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-Sphere.o: Sphere.cpp Sphere.h Primitive.h common.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-Raytracer.o: Raytracer.cpp Raytracer.h common.h Primitive.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-Material.o: Material.cpp Material.h common.h Primitive.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+include $(DEPFILE)
