@@ -8,3 +8,12 @@ hitresult_t Primitive::doIntersect(const ray_t& ray, double& distance, vector3_t
 color_t Primitive::colorAt(const vector3_t& pos) {
 	return material->colorAt(this, pos);
 }
+
+
+void Primitive::setMaterial(Material* m) {
+	material = m;
+}
+
+Material* Primitive::getMaterial() {
+	return material;
+}

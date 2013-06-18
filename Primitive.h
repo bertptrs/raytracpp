@@ -22,6 +22,9 @@ class Primitive {
 		virtual color_t colorAt(const vector3_t& pos);
 		
 		hitresult_t doIntersect(const ray_t& ray, double& distance, vector3_t& hit, vector3_t& normal);
+
+		void setMaterial(Material* m);
+		Material* getMaterial();
 };
 
 typedef std::list<Primitive*> plist_t;

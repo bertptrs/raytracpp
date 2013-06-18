@@ -7,8 +7,13 @@
 
 using namespace std;
 
-const int IMAGE_WIDTH = 480;
-const int IMAGE_HEIGHT = 360;
+const int IMAGE_WIDTH = 800;
+const int IMAGE_HEIGHT = 600;
+
+template<typename T>
+void deleteObject(T* o) {
+	delete o;
+}
 
 void drawTestImage(OutputBitmap* b) {
 	color_t c(1,0,0);
