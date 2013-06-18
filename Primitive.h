@@ -2,6 +2,7 @@
 #define PRIMITIVE_H
 
 #include "common.h"
+#include <list>
 
 typedef enum {
 	HIT,
@@ -17,5 +18,7 @@ class Primitive {
 		
 		hitresult_t doIntersect(const ray_t& ray, double& distance, vector3_t& hit, vector3_t& normal);
 };
+
+typedef std::list<Primitive*> plist_t;
 
 #endif

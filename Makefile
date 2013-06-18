@@ -38,3 +38,4 @@ Sphere.o: Sphere.cpp Sphere.h Primitive.h common.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 Raytracer.o: Raytracer.cpp Raytracer.h common.h Primitive.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@

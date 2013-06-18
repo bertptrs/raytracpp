@@ -16,9 +16,10 @@ typedef enum {
 class Raytracer {
 	private:
 		OutputBitmap* const bitmap;
-		list<Primitive*> scene;
+		plist_t scene;
 		ray_t camera;
 		static const vector3_t UP;
+		color_t BACKGROUND;
 
 		vector3_t xDir, yDir;
 		double scale;
@@ -28,13 +29,17 @@ class Raytracer {
 
 		Primitive* trace(const ray_t& ray, vector3_t& hit, vector3_t& normal, color_t& color_t);
 
+
 	public:
 		Raytracer(OutputBitmap* bm);
 		
 		void addObject(Primitive* object);
 		void removeObject(Primitive* object);
+		ray_t getCamera();
 
 		renderresult_t render();
+
+		void cleanup();
 };
 
 #endif

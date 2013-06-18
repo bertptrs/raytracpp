@@ -1,9 +1,12 @@
 #include "Raytracer.h"
+#include <algorithm>
+
+using namespace std;
 
 const vector3_t Raytracer::UP = vector3_t(0,0,1);
 
 Raytracer::Raytracer(OutputBitmap* bm) :
-	bitmap(bm)
+	bitmap(bm), BACKGROUND(color_t())
 {
 	camera.origin = vector3_t(0,0,0);
 	camera.direction = vector3_t(1,0,0);
@@ -29,7 +32,7 @@ renderresult_t Raytracer::render() {
 	for(x = 0; x < width; x++) {
 		sX = (double) (x - (width / 2)) / width;
 		for(y = 0; y < height; y++) {
-			sY = (double) (y - (height / 2)) / height;
+			sY = (double) (y - (height / 2)) / height / scale;
 			color_t pixel = getPixel(sX, sY);
 			bitmap->setPixel(x, y, pixel);
 		}
@@ -46,8 +49,9 @@ void Raytracer::initScreen() {
 
 color_t Raytracer::getPixel(double sX, double sY) {
 	ray_t ray = camera;
-	ray.direction += xDir * sX;
-	ray.direction += yDir * sY;
+	ray.direction += sX * xDir;
+	ray.direction += sY * yDir;
+	ray.direction.normalize();
 
 	color_t retColor;
 	vector3_t hit, normal;
@@ -58,6 +62,44 @@ color_t Raytracer::getPixel(double sX, double sY) {
 }
 
 Primitive* Raytracer::trace(const ray_t& ray, vector3_t& hit, vector3_t& normal, color_t& color) {
-	// FIXME: dummy
-	return NULL;
+	Primitive* nearest = NULL;
+	double minD = INFINITY;
+	double tmpD;
+	vector3_t tmpHit, tmpNormal;
+	hitresult_t res, tmpRes;
+
+	for(plist_t::iterator it = scene.begin(); it != scene.end(); it++) {
+		Primitive* current = *it;
+		tmpRes = current->doIntersect(ray, tmpD, tmpHit, tmpNormal);
+		if(tmpRes == MISS || tmpD > minD) {
+			// Miss or already hidden
+			continue;
+		}
+		res = tmpRes;
+		nearest = current;
+		hit = tmpHit;
+		normal = tmpNormal;
+	}
+	if(nearest != NULL) {
+		color = color_t(1,0,1);
+	} else {
+		color = color_t(0, 0, 0);
+	}
+	return nearest;
+}
+
+ray_t Raytracer::getCamera() {
+	return camera;
+}
+
+void Raytracer::cleanup() {
+	struct {
+		void operator() (Primitive* p) {
+			delete p;
+		}
+	} deleteObject;
+
+	for_each(scene.begin(), scene.end(), deleteObject);
+
+	scene.clear();
 }
