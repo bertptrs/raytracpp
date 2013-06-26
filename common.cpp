@@ -71,8 +71,13 @@ void vector3_t::operator *= (vector3_t const * const a) {
 }
 
 void vector3_t::operator *= (double factor) {
-	for(int i = 0; i < DIMENSION; i++)
-		cells[i] *= factor;
+	coords.x *= factor;
+	coords.y *= factor;
+	coords.z *= factor;
+}
+
+vector3_t vector3_t::operator - () const {
+	return vector3_t(-coords.x, -coords.y, -coords.z);
 }
 
 ostream& operator << (ostream& out, const vector3_t& v) {

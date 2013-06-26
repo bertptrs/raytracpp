@@ -26,7 +26,7 @@ run: all
 	eog result.ppm &
 
 $(DEPFILE): $(OBJ_SRC) $(OBJ_HEAD)
-	gcc -MM $(OBJ_SRC) > $@
+	gcc $(CXXFLAGS) -MM $(OBJ_SRC) > $@
 
 test: test.cpp $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@

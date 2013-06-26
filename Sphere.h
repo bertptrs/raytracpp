@@ -3,6 +3,8 @@
 
 #include "Primitive.h"
 
+using namespace std;
+
 class Sphere : public Primitive {
 	private:
 		const vector3_t pos;
@@ -11,6 +13,7 @@ class Sphere : public Primitive {
 
 	public:
 		Sphere(const vector3_t& pos, double radius);
+		void getLightPoints(forward_list<const vector3_t*>& lightList) const;
 };
 
 #endif

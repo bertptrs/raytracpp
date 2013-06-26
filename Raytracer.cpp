@@ -23,6 +23,7 @@ void Raytracer::removeObject(Primitive* object) {
 renderresult_t Raytracer::render() {
 	int width = bitmap->getWidth(), height = bitmap->getHeight();
 	initScreen();
+	initLights();
 
 	if(xDir.squareLength() == 0 || yDir.squareLength() == 0)
 		return INVALID_CAMERA;
@@ -38,6 +39,14 @@ renderresult_t Raytracer::render() {
 		}
 	}
 	return OK;
+}
+
+void Raytracer::initLights() {
+	for(auto it = scene.begin(); it != scene.end(); it++) {
+		Primitive* p = *it;
+		if(p->getMaterial()->isLight())
+			lights.push_back(p);
+	}
 }
 
 void Raytracer::initScreen() {
@@ -61,29 +70,81 @@ color_t Raytracer::getPixel(double sX, double sY) {
 	return retColor;
 }
 
-Primitive* Raytracer::trace(const ray_t& ray, vector3_t& hit, vector3_t& normal, color_t& color) {
+Primitive* Raytracer::getNearest(const ray_t& ray) const {
 	Primitive* nearest = NULL;
 	double minD = INFINITY;
 	double tmpD;
 	vector3_t tmpHit, tmpNormal;
-	hitresult_t res, tmpRes;
-
-	for(plist_t::iterator it = scene.begin(); it != scene.end(); it++) {
+	hitresult_t res;
+	for(auto it = scene.begin(); it != scene.end(); it++) {
 		Primitive* current = *it;
-		tmpRes = current->doIntersect(ray, tmpD, tmpHit, tmpNormal);
-		if(tmpRes == MISS || tmpD > minD) {
+		res = current->doIntersect(ray, tmpD, tmpHit, tmpNormal);
+		if(res == MISS || tmpD > minD) {
 			// Miss or already hidden
 			continue;
+		} else {
+			minD = tmpD;
+			nearest = current;
 		}
-		res = tmpRes;
-		nearest = current;
-		hit = tmpHit;
-		normal = tmpNormal;
 	}
+
+	return nearest;
+}
+
+color_t Raytracer::getDiffusion(const vector3_t& pos, const vector3_t& normal, const color_t& color) {
+	color_t diffuse;
+	forward_list<const vector3_t*> lightPoints;
+	for(auto it = lights.begin(); it != lights.end(); it++) {
+		Primitive* light = *it;
+		double strength = 0;
+		int points = 0;
+		light->getLightPoints(lightPoints);
+		for(auto pit = lightPoints.begin(); pit != lightPoints.end(); pit++, points++) {
+			ray_t shadowRay;
+			shadowRay.origin = pos + EPSILON * normal;
+			shadowRay.direction = -pos;
+			shadowRay.direction += *pit;
+			shadowRay.direction.normalize();
+			double lightAngle = normal.dot(shadowRay.direction);
+			vector3_t lightOrigin = **pit;
+			if(lightAngle > 0 && getNearest(shadowRay) == light) {
+				strength += lightAngle / (pos - lightOrigin).squareLength();
+			}
+		}
+		strength *= light->getMaterial()->luminance / points;
+		diffuse += strength * color;
+	}
+
+	return diffuse;
+}
+
+
+Primitive* Raytracer::trace(const ray_t& ray, vector3_t& hit, vector3_t& normal, color_t& color) {
+	Primitive* nearest = getNearest(ray);
+	hitresult_t res;
+	color_t ERROR(1,0,1);
+	double hitDistance;
+
+	color = color_t();
+
 	if(nearest != NULL) {
-		color = color_t(1,0,1);
+		res = nearest->doIntersect(ray, hitDistance, hit, normal);
+		if(res == INSIDE)
+			normal = -normal;
+		normal.normalize();
+		// Compute lighting
+		Material* mat;
+		if((mat = nearest->getMaterial()) == NULL) {
+			color = ERROR;
+			return nearest;
+		}
+		color_t objectColor = mat->colorAt(nearest, hit);
+
+		if(mat->doesDiffuse())
+			color += mat->data.diffusion * getDiffusion(hit, normal, objectColor);
+
 	} else {
-		color = color_t(0, 0, 0);
+		color = BACKGROUND;
 	}
 	return nearest;
 }

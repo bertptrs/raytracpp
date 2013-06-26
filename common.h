@@ -1,5 +1,6 @@
 #ifndef COMMON_H
 #define COMMON_H
+#define EPSILON 1e-10
 #include <iostream>
 
 class vector3_t {
@@ -29,11 +30,12 @@ class vector3_t {
 		void operator *= (vector3_t const * const);
 		void operator *= (double factor);
 
-		vector3_t operator - ();
+		vector3_t operator - () const;
 };
 
 vector3_t operator + (const vector3_t& a, const vector3_t& b);
 vector3_t operator - (const vector3_t& a, const vector3_t& b);
+vector3_t operator - (const vector3_t& a, vector3_t const * const);
 vector3_t operator * (const vector3_t& a, const vector3_t& b);
 vector3_t operator * (double factor, const vector3_t& original);
 

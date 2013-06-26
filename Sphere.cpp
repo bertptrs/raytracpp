@@ -34,3 +34,8 @@ hitresult_t Sphere::intersect(const ray_t& ray, double& distance, vector3_t& hit
 
 	return hitresult;
 }
+
+void Sphere::getLightPoints(forward_list<const vector3_t*>& lightList) const {
+	lightList.clear();
+	lightList.push_front(&pos);
+}

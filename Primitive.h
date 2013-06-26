@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include <list>
+#include <forward_list>
 #include "Material.h"
 
 class Material;
@@ -25,6 +26,8 @@ class Primitive {
 
 		void setMaterial(Material* m);
 		Material* getMaterial();
+		virtual void getLightPoints(std::forward_list<const vector3_t*>& lightList) const = 0;
+
 };
 
 typedef std::list<Primitive*> plist_t;

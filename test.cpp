@@ -40,12 +40,19 @@ void drawTestImage(OutputBitmap* b) {
 void loadTestScene(Raytracer& r) {
 	Primitive* object = new Sphere(vector3_t(15,0,0), 3);
 	r.addObject(object);
+	object->setMaterial(new Material(color_t(0.5,0.7,0.5), 1, 0, 0));
+
 	object = new Sphere(vector3_t(17,-4.5,4.5), 1.8);
 	r.addObject(object);
+	object->setMaterial(new Material(color_t(1,0.3,0.3), 1, 0, 0));
+
 	object = new Sphere(vector3_t(19, 2, -2), 2);
 	r.addObject(object);
+	object->setMaterial(new Material(color_t(0.3,1,0.3), 1, 0, 0));
+
 	object = new Sphere(vector3_t(13,3,3), 0.1);
 	r.addObject(object);
+	object->setMaterial(new Material(color_t(1,1,1), 50));
 }
 
 int main() {
