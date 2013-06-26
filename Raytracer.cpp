@@ -6,7 +6,7 @@ using namespace std;
 const vector3_t Raytracer::UP = vector3_t(0,0,1);
 
 Raytracer::Raytracer(OutputBitmap* bm) :
-	bitmap(bm), BACKGROUND(color_t())
+	bitmap(bm), BACKGROUND(color_t()), depth(DEFAULT_DEPTH)
 {
 	camera.origin = vector3_t(0,0,0);
 	camera.direction = vector3_t(1,0,0);
@@ -118,8 +118,26 @@ color_t Raytracer::getDiffusion(const vector3_t& pos, const vector3_t& normal, c
 	return diffuse;
 }
 
+color_t Raytracer::getReflection(const vector3_t& pos, const vector3_t& normal, const vector3_t& inAngle, const color_t& color) {
+	depth--;
+	ray_t reflectionRay;
+	reflectionRay.origin = pos + EPSILON * normal;
+	reflectionRay.direction = inAngle - 2 * inAngle.dot(normal) * normal;
+	color_t reflectionColor;
+	vector3_t hit, tmpNormal;
+	trace(reflectionRay, hit, tmpNormal, reflectionColor);
+	depth++;
+
+	return reflectionColor * color;
+}
+
 
 Primitive* Raytracer::trace(const ray_t& ray, vector3_t& hit, vector3_t& normal, color_t& color) {
+	if(depth < 0) {
+		color = BACKGROUND;
+		return NULL;
+	}
+
 	Primitive* nearest = getNearest(ray);
 	hitresult_t res;
 	color_t ERROR(1,0,1);
@@ -132,16 +150,23 @@ Primitive* Raytracer::trace(const ray_t& ray, vector3_t& hit, vector3_t& normal,
 		if(res == INSIDE)
 			normal = -normal;
 		normal.normalize();
-		// Compute lighting
 		Material* mat;
 		if((mat = nearest->getMaterial()) == NULL) {
 			color = ERROR;
 			return nearest;
 		}
-		color_t objectColor = mat->colorAt(nearest, hit);
+		if(mat->isLight()) {
+			color = mat->colorAt(nearest, hit);
+		} else {
+			color_t objectColor = mat->colorAt(nearest, hit);
 
-		if(mat->doesDiffuse())
-			color += mat->data.diffusion * getDiffusion(hit, normal, objectColor);
+			if(mat->doesDiffuse())
+				color += mat->data.diffusion * getDiffusion(hit, normal, objectColor);
+
+			if(mat->doesReflect()) {
+				color += mat->data.reflection * getReflection(hit, normal, ray.direction, objectColor);
+			}
+		}
 
 	} else {
 		color = BACKGROUND;

@@ -44,7 +44,7 @@ void loadTestScene(Raytracer& r) {
 
 	object = new Sphere(vector3_t(17,-4.5,4.5), 1.8);
 	r.addObject(object);
-	object->setMaterial(new Material(color_t(1,0.3,0.3), 1, 0, 0));
+	object->setMaterial(new Material(color_t(1,0.3,0.3), 0.3, 0.7, 0));
 
 	object = new Sphere(vector3_t(19, 2, -2), 2);
 	r.addObject(object);
