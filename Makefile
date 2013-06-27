@@ -7,7 +7,8 @@ OBJS=common.o\
 	 Primitive.o\
 	 Sphere.o\
 	 Raytracer.o\
-	 Material.o
+	 Material.o\
+	 Plane.o
 
 DEPFILE = .depends
 
