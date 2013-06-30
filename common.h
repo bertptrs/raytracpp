@@ -1,6 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 #define EPSILON 1e-10
+#define DOT(v1, v2) (v1.coords.x * v2.coords.x + v1.coords.y * v2.coords.y + v1.coords.z * v2.coords.z)
 #include <iostream>
 
 class vector3_t {
@@ -44,10 +45,17 @@ std::ostream& operator << (std::ostream& out, const vector3_t& v);
 
 typedef vector3_t color_t;
 
-typedef struct {
-	vector3_t origin;
-	vector3_t direction;
-} ray_t;
+class Ray {
+	public:
+		vector3_t origin;
+		vector3_t direction;
+
+		Ray() = default;
+		Ray(const vector3_t& origin);
+		Ray(const vector3_t& origin, const vector3_t& direction);
+};
+
+typedef Ray ray_t;
 
 
 

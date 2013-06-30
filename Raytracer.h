@@ -33,8 +33,10 @@ class Raytracer {
 
 		Primitive* trace(const ray_t& ray, vector3_t& hit, vector3_t& normal, color_t& color_t);
 		Primitive* getNearest(const ray_t& ray) const;
-		color_t getDiffusion(const vector3_t& pos, const vector3_t& normal, const color_t& color);
-		color_t getReflection(const vector3_t& pos, const vector3_t& normal, const vector3_t& inAngle, const color_t& color);
+		inline color_t getDiffusion(const vector3_t& pos, const vector3_t& normal, const color_t& color);
+		inline color_t getReflection(const vector3_t& pos, const vector3_t& normal, const vector3_t& inAngle, const color_t& color);
+		inline color_t getRefraction(const vector3_t& pos, const vector3_t& normal, const vector3_t& inAngle, const color_t& color);
+
 
 
 	public:

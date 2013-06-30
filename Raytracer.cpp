@@ -1,5 +1,6 @@
 #include "Raytracer.h"
 #include <algorithm>
+#include <cmath>
 
 using namespace std;
 
@@ -188,4 +189,24 @@ void Raytracer::cleanup() {
 	for_each(scene.begin(), scene.end(), deleteObject);
 
 	scene.clear();
+}
+
+color_t Raytracer::getRefraction(const vector3_t& pos, const vector3_t& normal, const vector3_t& inAngle, const color_t& color) {
+	const double rindex = 1.33;
+	double n = 1 / rindex;
+	double cosI = -DOT(normal, inAngle);
+	double cosT2 = 1 - n * n * (1 - cosI * cosI);
+	color_t refractionColor;
+	if(cosT2 > 0) {
+		depth--;
+		ray_t refractionRay(pos + EPSILON * normal, n * inAngle);
+		refractionRay.direction += (n * cosI - sqrt(cosT2)) * normal;
+		vector3_t hit, tmpNormal;
+		trace(refractionRay, hit, tmpNormal, refractionColor);
+		depth++;
+	} else {
+		refractionColor = BACKGROUND;
+	}
+
+	return refractionColor;
 }

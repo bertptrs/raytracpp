@@ -113,3 +113,6 @@ vector3_t operator * (double factor, const vector3_t& original) {
 	b *= factor;
 	return b;
 }
+
+Ray::Ray(const vector3_t& origin) : origin(origin) {}
+Ray::Ray(const vector3_t& origin, const vector3_t& direction) : origin(origin), direction(direction) {}
