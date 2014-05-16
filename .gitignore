@@ -1,5 +1,5 @@
 #Binaries
-*.o
+bin/
 test
 
 #Resulting images
@@ -10,4 +10,4 @@ test
 *.swp
 
 #Makefile dependencies
-.depends
+Makefile.depend
