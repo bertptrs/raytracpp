@@ -4,6 +4,7 @@ test
 
 #Resulting images
 *.ppm
+*.jpeg
 
 #Annoying vim swap files
 *.swp

@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-Wall -Wextra -pedantic -O3 -std=c++0x -ffast-math -march=native
+CXXFLAGS=-Wall -Wextra -pedantic -O3 -std=c++11 -ffast-math -march=native
 LDFLAGS=-ljpeg
 
 OBJS=common.o\
