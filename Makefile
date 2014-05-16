@@ -35,6 +35,6 @@ test: test.cpp $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) $< -c -o $@ $(LDFLAGS)
+	$(CXX) $(CXXFLAGS) $< -c -o $@
 
 include $(DEPFILE)

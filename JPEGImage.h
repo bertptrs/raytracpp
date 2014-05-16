@@ -1,9 +1,9 @@
 #ifndef JPEGIMAGE_H
 #define JPEGIMAGE_H
-#include "PPMImage.h"
+#include "OutputBitmap.h"
 #include <vector>
 
-class JPEGImage : public PPMImage {
+class JPEGImage : public OutputBitmap {
 
 	public:
 		JPEGImage(unsigned int, unsigned int);

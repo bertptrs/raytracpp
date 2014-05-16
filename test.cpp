@@ -17,28 +17,6 @@ void deleteObject(T* o) {
 	delete o;
 }
 
-void drawTestImage(OutputBitmap* b) {
-	color_t c(1,0,0);
-	for(int x = 0; x < IMAGE_WIDTH / 2; x++) {
-		for(int y = 0; y < IMAGE_HEIGHT / 2; y++) {
-			b->setPixel(x,y,c);
-		}
-	}
-	c = color_t(0,1,0);
-	for(int x = IMAGE_WIDTH / 2; x < IMAGE_WIDTH; x++) {
-		for(int y = 0; y < IMAGE_HEIGHT / 2; y++) {
-			b->setPixel(x,y,c);
-		}
-	}
-	c = color_t(0,0,1);
-	for(int x = 0; x < IMAGE_WIDTH / 2; x++) {
-		for(int y = IMAGE_HEIGHT / 2; y < IMAGE_HEIGHT; y++) {
-			b->setPixel(x,y,c);
-		}
-	}
-}
-
-
 void loadTestScene(Raytracer& r) {
 	Primitive* object = new Sphere(vector3_t(15,0,0), 3);
 	r.addObject(object);

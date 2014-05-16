@@ -4,7 +4,7 @@
 using namespace std;
 
 JPEGImage::JPEGImage(unsigned int width, unsigned int height) :
-	PPMImage(width, height)
+	OutputBitmap(width, height)
 {
 }
 
