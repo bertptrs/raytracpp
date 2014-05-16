@@ -1,43 +1,42 @@
 #include <algorithm>
 #include "PPMImage.h"
-#define CHANNEL_MAX 255
 
 using namespace std;
 
+const int PPMImage::CHANNEL_MAX = 255;
+const int PPMImage::CHANNELS = 3;
+
 PPMImage::PPMImage(unsigned int width, unsigned int height) : OutputBitmap(width, height) {
-	bitmap = new uint32_t*[width];
-	for(unsigned int i = 0; i < width; i++) {
-		bitmap[i] = new uint32_t[height];
-	}
+	bitmap = new unsigned char[width * height * CHANNELS];
 }
 
 PPMImage::~PPMImage() {
-	for(unsigned int i = 0; i < width; i++) {
-		delete[] bitmap[i];
-	}
 	delete[] bitmap;
 }
 
 void PPMImage::setPixel(unsigned int x, unsigned int y, const color_t& c) {
-	uint32_t r,g,b;
-	r = max(0, min(CHANNEL_MAX, (int) (c.channels.r * CHANNEL_MAX)));
-	g = max(0, min(CHANNEL_MAX, (int) (c.channels.g * CHANNEL_MAX)));
-	b = max(0, min(CHANNEL_MAX, (int) (c.channels.b * CHANNEL_MAX)));
-	bitmap[x][y] = (r << 16) | (g << 8) | b;
+	unsigned char r,g,b;
+	r = (unsigned char) max(0, min(CHANNEL_MAX, (int) (c.channels.r * CHANNEL_MAX)));
+	g = (unsigned char) max(0, min(CHANNEL_MAX, (int) (c.channels.g * CHANNEL_MAX)));
+	b = (unsigned char) max(0, min(CHANNEL_MAX, (int) (c.channels.b * CHANNEL_MAX)));
+	unsigned char* pixel = getPixelArray(x, y);
+	pixel[0] = r;
+	pixel[1] = g;
+	pixel[2] = b;
 }
 
 void PPMImage::getPixel(unsigned int x, unsigned int y, color_t& c) const {
-	uint32_t color = bitmap[x][y];
-	c.channels.r = ((color >> 16) & 0xff) / CHANNEL_MAX;
-	c.channels.g = ((color >> 8) & 0xff) / CHANNEL_MAX;
-	c.channels.b = (color & 0xff) / CHANNEL_MAX;
+	unsigned char* color = getPixelArray(x, y);
+	c.channels.r = double(color[0] / CHANNEL_MAX);
+	c.channels.g = double(color[1] / CHANNEL_MAX);
+	c.channels.b = double(color[2] / CHANNEL_MAX);
 }
 
 color_t PPMImage::getPixel(unsigned int x, unsigned int y) const {
-	uint32_t c = bitmap[x][y];
-	double r = ((c >> 16) & 0xff) / CHANNEL_MAX;
-	double g = ((c >> 8) & 0xff) / CHANNEL_MAX;
-	double b = (c & 0xff) / CHANNEL_MAX;
+	unsigned char* c = getPixelArray(x, y);
+	double r = double(c[0]) / CHANNEL_MAX;
+	double g = double(c[1]) / CHANNEL_MAX;
+	double b = double(c[2]) / CHANNEL_MAX;
 	
 	return color_t(r,g,b);
 }
@@ -48,16 +47,10 @@ void PPMImage::write(ostream& output) const {
 		<< width << " " << height
 		<< "\n" << 255 << "\n";
 	// Write the PPM bitmap
-	uint32_t c;
-	for(unsigned int y = 0; y < height; y++) {
-		for(unsigned int x = 0; x < width; x++) {
-			c = bitmap[x][y];
-			char r = (c >> 16) & 0xff;
-			char g = (c >> 8) & 0xff;
-			char b = c & 0xff;
-			output.put(r);
-			output.put(g);
-			output.put(b);
-		}
-	}
+	output.write((char*) bitmap, width * height * CHANNELS);
+}
+
+unsigned char* PPMImage::getPixelArray(unsigned int x, unsigned int y) const
+{
+	return (unsigned char*) bitmap + (y * width + x) * 3;
 }

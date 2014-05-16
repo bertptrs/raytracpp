@@ -1,5 +1,6 @@
 CXX=g++
-CXXFLAGS=-Wall -Wextra -pedantic -O3 -std=c++0x
+CXXFLAGS=-Wall -Wextra -pedantic -O3 -std=c++0x -ffast-math -march=native
+LDFLAGS=-ljpeg
 
 OBJS=common.o\
 	 OutputBitmap.o\
@@ -8,7 +9,8 @@ OBJS=common.o\
 	 Sphere.o\
 	 Raytracer.o\
 	 Material.o\
-	 Plane.o
+	 Plane.o\
+	 JPEGImage.o
 
 DEPFILE = .depends
 
@@ -30,9 +32,9 @@ $(DEPFILE): $(OBJ_SRC) $(OBJ_HEAD)
 	gcc $(CXXFLAGS) -MM $(OBJ_SRC) > $@
 
 test: test.cpp $(OBJS)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) $< -c -o $@
+	$(CXX) $(CXXFLAGS) $< -c -o $@ $(LDFLAGS)
 
 include $(DEPFILE)

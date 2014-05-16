@@ -5,11 +5,12 @@
 #include "Raytracer.h"
 #include "Sphere.h"
 #include "Plane.h"
+#include "JPEGImage.h"
 
 using namespace std;
 
-const int IMAGE_WIDTH = 480;
-const int IMAGE_HEIGHT = 320;
+const int IMAGE_WIDTH = 1680;
+const int IMAGE_HEIGHT = 1050;
 
 template<typename T>
 void deleteObject(T* o) {
@@ -72,8 +73,8 @@ int main(int argc, char** argv) {
 		}
 	}
 	cout << "Test program started." << endl;
-	ofstream f("result.ppm");
-	OutputBitmap* b = new PPMImage(width, height);
+	ofstream f("result.jpeg");
+	OutputBitmap* b = new JPEGImage(width, height);
 	Raytracer r(b);
 
 	loadTestScene(r);

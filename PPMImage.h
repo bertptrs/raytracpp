@@ -5,8 +5,14 @@
 #include "stdint.h"
 
 class PPMImage : public OutputBitmap {
-	private:
-		uint32_t** bitmap;
+	protected:
+		unsigned char* bitmap;
+
+		static const int CHANNEL_MAX;
+		static const int CHANNELS;
+
+		unsigned char* getPixelArray(unsigned int x, unsigned int y) const;
+
 	public:
 		PPMImage(unsigned int width, unsigned int height);
 		~PPMImage();
