@@ -15,7 +15,8 @@ _OBJS=common.o\
 	 Raytracer.o\
 	 Material.o\
 	 Plane.o\
-	 JPEGImage.o
+	 JPEGImage.o\
+	 TraceProgram.o
 
 OBJS=$(patsubst %, $(OBJDIR)/%, $(_OBJS))
 
@@ -26,7 +27,7 @@ OBJ_HEAD=$(patsubst %.o, %.h, $(_OBJS))
 
 .PHONY: all clean run config
 
-all: $(DEPFILE) test
+all: test
 
 $(OBJDIR):
 	@mkdir $@
@@ -42,7 +43,7 @@ run: all
 	eog result.ppm &
 
 $(DEPFILE): $(OBJ_SRC) $(OBJ_HEAD)
-	gcc $(CXXFLAGS) -MM $^ > $@
+	@gcc $(CXXFLAGS) -MM $^ > $@ 2> /dev/null
 
 test: test.cpp $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
