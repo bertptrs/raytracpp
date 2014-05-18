@@ -2,6 +2,7 @@ CXX=g++
 CXXFLAGS=-Wall -Wextra -pedantic -O3 -std=c++11 -ffast-math -march=native
 LDFLAGS=-ljpeg
 RM=rm -rf
+MKDIR=mkdir -p
 
 VPATH = src/
 
@@ -30,7 +31,7 @@ OBJ_HEAD=$(patsubst %.o, %.h, $(_OBJS))
 all: test
 
 $(OBJDIR):
-	@mkdir $@
+	@$(MKDIR) $@
 
 clean:
 	$(RM) test

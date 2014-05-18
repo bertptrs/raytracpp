@@ -13,7 +13,7 @@ const unsigned int TraceProgram::DEFAULT_WIDTH = 400;
 TraceProgram::TraceProgram()
 	: width(DEFAULT_WIDTH), height(DEFAULT_HEIGHT), debug(false), tracer(NULL), canvas(NULL)
 {
-	filename = "out.ppm";
+	filename = "out.jpeg";
 }
 
 TraceProgram::~TraceProgram()
