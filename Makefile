@@ -7,6 +7,10 @@ MKDIR=mkdir -p
 VPATH = src/
 
 OBJDIR=bin
+DEPDIR=.deps
+
+DIRS=$(OBJDIR)\
+	 $(DEPDIR)
 
 _OBJS=common.o\
 	 OutputBitmap.o\
@@ -17,39 +21,40 @@ _OBJS=common.o\
 	 Material.o\
 	 Plane.o\
 	 JPEGImage.o\
-	 TraceProgram.o
+	 TraceProgram.o\
+	 tinyxml2.o\
+	 Scene.o\
+	 test.o
 
+DEPS=$(patsubst %.o, $(DEPDIR)/%.depend, $(_OBJS))
 OBJS=$(patsubst %, $(OBJDIR)/%, $(_OBJS))
 
 DEPFILE=Makefile.depend
 
-OBJ_SRC=$(patsubst %.o, %.cpp, $(_OBJS))
-OBJ_HEAD=$(patsubst %.o, %.h, $(_OBJS))
+CPPFILES=$(wildcard src/*.cpp)
 
 .PHONY: all clean run config
 
 all: test
 
-$(OBJDIR):
-	@$(MKDIR) $@
+$(DIRS):
+	$(MKDIR) $@
 
 clean:
 	$(RM) test
-	$(RM) result.*
 	$(RM) $(DEPFILE)
-	$(RM) $(OBJDIR)
+	$(RM) $(DIRS)
 
-run: all
-	./test
-	eog result.ppm &
+$(DEPFILE): $(CPPFILES)
+	gcc $(CXXFLAGS) -MM $^ > $@ 2> /dev/null
 
-$(DEPFILE): $(OBJ_SRC) $(OBJ_HEAD)
-	@gcc $(CXXFLAGS) -MM $^ > $@ 2> /dev/null
-
-test: test.cpp $(OBJS)
+test: $(OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
-$(OBJDIR)/%.o: %.cpp | $(OBJDIR)
+$(OBJDIR)/%.o: %.cpp | $(DIRS)
 	$(CXX) $(CXXFLAGS) $< -c -o $@
 
-include $(DEPFILE)
+$(DEPDIR)/%.depend: %.cpp | $(DIRS)
+	$(CXX) $(CXXFLAGS) -MM -MG -MT $(OBJDIR)/$(basename $(notdir $<)).o -MF $@ $<
+
+include $(DEPS)
