@@ -34,10 +34,10 @@ class Material {
 		Material(const color_t& color, const double& diffusion, const double& reflection, const double& refraction);
 		virtual color_t colorAt(Primitive const * const parent, const vector3_t& pos) const;
 
-		virtual bool isLight();
-		virtual bool doesDiffuse();
-		virtual bool doesReflect();
-		virtual bool doesRefract();
+		virtual bool isLight() const;
+		virtual bool doesDiffuse() const;
+		virtual bool doesReflect() const;
+		virtual bool doesRefract() const;
 };
 
 #endif

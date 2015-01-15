@@ -11,6 +11,6 @@ void PPMImage::write(ostream& output) const {
 		<< width << " " << height
 		<< "\n" << 255 << "\n";
 	// Write the PPM bitmap
-	output.write((char*) bitmap, width * height * CHANNELS);
+	output.write((char*) &bitmap, width * height * CHANNELS);
 }
 

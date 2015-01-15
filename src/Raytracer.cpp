@@ -6,7 +6,7 @@ using namespace std;
 
 const vector3_t Raytracer::UP = vector3_t(0,0,1);
 
-Raytracer::Raytracer(OutputBitmap* bm) :
+Raytracer::Raytracer(shared_ptr<OutputBitmap> bm) :
 	bitmap(bm), BACKGROUND(color_t()), depth(DEFAULT_DEPTH)
 {
 	camera.origin = vector3_t(0,0,0);
@@ -14,11 +14,11 @@ Raytracer::Raytracer(OutputBitmap* bm) :
 }
 
 void Raytracer::addObject(Primitive* object) {
-	scene.push_back(object);
+	scene.push_back(shared_ptr<Primitive>(object));
 }
 
-void Raytracer::removeObject(Primitive* object) {
-	scene.remove(object);
+void Raytracer::addObject(shared_ptr<Primitive> object) {
+	scene.push_back(object);
 }
 
 renderresult_t Raytracer::render() {
@@ -43,8 +43,7 @@ renderresult_t Raytracer::render() {
 }
 
 void Raytracer::initLights() {
-	for(auto it = scene.begin(); it != scene.end(); it++) {
-		Primitive* p = *it;
+	for(auto p : scene) {
 		if(p->getMaterial()->isLight())
 			lights.push_back(p);
 	}
@@ -71,14 +70,13 @@ color_t Raytracer::getPixel(double sX, double sY) {
 	return retColor;
 }
 
-Primitive* Raytracer::getNearest(const ray_t& ray) const {
-	Primitive* nearest = NULL;
+shared_ptr<Primitive> Raytracer::getNearest(const ray_t& ray) const {
+	shared_ptr<Primitive> nearest;
 	double minD = INFINITY;
 	double tmpD;
 	vector3_t tmpHit, tmpNormal;
 	hitresult_t res;
-	for(auto it = scene.begin(); it != scene.end(); it++) {
-		Primitive* current = *it;
+	for(auto current : scene) {
 		res = current->doIntersect(ray, tmpD, tmpHit, tmpNormal);
 		if(res == MISS || tmpD > minD) {
 			// Miss or already hidden
@@ -95,21 +93,20 @@ Primitive* Raytracer::getNearest(const ray_t& ray) const {
 color_t Raytracer::getDiffusion(const vector3_t& pos, const vector3_t& normal, const color_t& color) {
 	color_t diffuse;
 	forward_list<const vector3_t*> lightPoints;
-	for(auto it = lights.begin(); it != lights.end(); it++) {
-		Primitive* light = *it;
+	for(auto light : lights) {
 		double strength = 0;
 		int points = 0;
 		light->getLightPoints(lightPoints);
-		for(auto pit = lightPoints.begin(); pit != lightPoints.end(); pit++, points++) {
+		for(const vector3_t* lightOrigin : lightPoints) {
+			points++;
 			ray_t shadowRay;
 			shadowRay.origin = pos + EPSILON * normal;
 			shadowRay.direction = -pos;
-			shadowRay.direction += *pit;
+			shadowRay.direction += lightOrigin;
 			shadowRay.direction.normalize();
 			double lightAngle = normal.dot(shadowRay.direction);
-			vector3_t lightOrigin = **pit;
 			if(lightAngle > 0 && getNearest(shadowRay) == light) {
-				strength += lightAngle / (pos - lightOrigin).squareLength();
+				strength += lightAngle / (pos - *lightOrigin).squareLength();
 			}
 		}
 		strength *= light->getMaterial()->luminance / points;
@@ -133,33 +130,33 @@ color_t Raytracer::getReflection(const vector3_t& pos, const vector3_t& normal, 
 }
 
 
-Primitive* Raytracer::trace(const ray_t& ray, vector3_t& hit, vector3_t& normal, color_t& color) {
+shared_ptr<Primitive> Raytracer::trace(const ray_t& ray, vector3_t& hit, vector3_t& normal, color_t& color) {
 	if(depth < 0) {
 		color = BACKGROUND;
-		return NULL;
+		return nullptr;
 	}
 
-	Primitive* nearest = getNearest(ray);
+	auto nearest = getNearest(ray);
 	hitresult_t res;
 	color_t ERROR(1,0,1);
 	double hitDistance;
 
 	color = color_t();
 
-	if(nearest != NULL) {
+	if(nearest != nullptr) {
 		res = nearest->doIntersect(ray, hitDistance, hit, normal);
 		if(res == INSIDE)
 			normal = -normal;
 		normal.normalize();
-		Material* mat;
-		if((mat = nearest->getMaterial()) == NULL) {
+		auto mat = nearest->getMaterial();
+		if(mat == nullptr) {
 			color = ERROR;
 			return nearest;
 		}
 		if(mat->isLight()) {
-			color = mat->colorAt(nearest, hit);
+			color = mat->colorAt(nearest.get(), hit);
 		} else {
-			color_t objectColor = mat->colorAt(nearest, hit);
+			color_t objectColor = mat->colorAt(nearest.get(), hit);
 
 			if(mat->doesDiffuse())
 				color += mat->data.diffusion * getDiffusion(hit, normal, objectColor);
@@ -177,18 +174,6 @@ Primitive* Raytracer::trace(const ray_t& ray, vector3_t& hit, vector3_t& normal,
 
 ray_t Raytracer::getCamera() {
 	return camera;
-}
-
-void Raytracer::cleanup() {
-	struct {
-		void operator() (Primitive* p) {
-			delete p;
-		}
-	} deleteObject;
-
-	for_each(scene.begin(), scene.end(), deleteObject);
-
-	scene.clear();
 }
 
 color_t Raytracer::getRefraction(const vector3_t& pos, const vector3_t& normal, const vector3_t& inAngle, const color_t& color) {

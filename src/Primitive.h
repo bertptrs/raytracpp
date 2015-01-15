@@ -5,6 +5,9 @@
 #include <list>
 #include <forward_list>
 #include "Material.h"
+#include <memory>
+
+using namespace std;
 
 class Material;
 
@@ -16,7 +19,7 @@ typedef enum {
 
 class Primitive {
 	protected:
-		Material* material;
+		shared_ptr<Material> material;
 		virtual hitresult_t intersect(const ray_t& ray, double& distance, vector3_t& hit, vector3_t& normal) = 0;
 	public:
 		virtual ~Primitive() {};
@@ -24,12 +27,13 @@ class Primitive {
 		
 		hitresult_t doIntersect(const ray_t& ray, double& distance, vector3_t& hit, vector3_t& normal);
 
-		void setMaterial(Material* m);
-		Material* getMaterial();
+		void setMaterial(shared_ptr<Material> material);
+		shared_ptr<const Material> getMaterial();
 		virtual void getLightPoints(std::forward_list<const vector3_t*>& lightList) const = 0;
 
 };
 
-typedef std::list<Primitive*> plist_t;
+// Primitive list
+typedef std::list<shared_ptr<Primitive>> plist_t;
 
 #endif

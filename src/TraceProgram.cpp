@@ -11,15 +11,13 @@ const unsigned int TraceProgram::DEFAULT_HEIGHT = 400;
 const unsigned int TraceProgram::DEFAULT_WIDTH = 400;
 
 TraceProgram::TraceProgram()
-	: width(DEFAULT_WIDTH), height(DEFAULT_HEIGHT), debug(false), tracer(NULL), canvas(NULL)
+	: width(DEFAULT_WIDTH), height(DEFAULT_HEIGHT), debug(false), tracer(nullptr), canvas(nullptr)
 {
 	filename = "out.jpeg";
 }
 
 TraceProgram::~TraceProgram()
 {
-	if (canvas != NULL)
-		delete canvas;
 }
 
 void TraceProgram::parseArguments(int argc, char** argv)
@@ -62,7 +60,7 @@ bool TraceProgram::init()
 	if (!initCanvas())
 		return false;
 
-	tracer = new Raytracer(canvas);
+	tracer = make_shared<Raytracer>(canvas);
 
 	loadTestScene();
 
@@ -86,12 +84,12 @@ bool TraceProgram::initCanvas()
 {
 	if (hasEnding(filename, ".ppm"))
 	{
-		canvas = new PPMImage(width, height);
+		canvas = make_shared<PPMImage>(width, height);
 		return true;
 	}
 	if (hasEnding(filename, ".jpg") || hasEnding(filename, ".jpeg"))
 	{
-		canvas = new JPEGImage(width, height);
+		canvas = make_shared<JPEGImage>(width, height);
 		return true;
 	}
 
@@ -110,25 +108,25 @@ bool TraceProgram::hasEnding(string haystack, string needle)
 }
 
 void TraceProgram::loadTestScene() {
-	Primitive* object = new Sphere(vector3_t(15,0,0), 3);
+	shared_ptr<Primitive> object = make_shared<Sphere>(vector3_t(15,0,0), 3);
 	tracer->addObject(object);
-	object->setMaterial(new Material(color_t(0.5,0.7,0.5), 1, 0, 0));
+	object->setMaterial(make_shared<Material>(color_t(0.5,0.7,0.5), 1, 0, 0));
 
-	object = new Sphere(vector3_t(17,-4.5,4.5), 1.8);
+	object = make_shared<Sphere>(vector3_t(17,-4.5,4.5), 1.8);
 	tracer->addObject(object);
-	object->setMaterial(new Material(color_t(1,0.3,0.3), 0.3, 0.7, 0));
+	object->setMaterial(make_shared<Material>(color_t(1,0.3,0.3), 0.3, 0.7, 0));
 
-	object = new Sphere(vector3_t(19, 2, -2), 2);
+	object = make_shared<Sphere>(vector3_t(19, 2, -2), 2);
 	tracer->addObject(object);
-	object->setMaterial(new Material(color_t(0.3,1,0.3), 1, 0, 0));
+	object->setMaterial(make_shared<Material>(color_t(0.3,1,0.3), 1, 0, 0));
 
-	object = new Sphere(vector3_t(13,3,3), 0.1);
+	object = make_shared<Sphere>(vector3_t(13,3,3), 0.1);
 	tracer->addObject(object);
-	object->setMaterial(new Material(color_t(1,1,1), 50));
+	object->setMaterial(make_shared<Material>(color_t(1,1,1), 50));
 
-	object = new Plane(vector3_t(0, 0, -5), vector3_t(0, 0, 1));
+	object = make_shared<Plane>(vector3_t(0, 0, -5), vector3_t(0, 0, 1));
 	tracer->addObject(object);
-	object->setMaterial(new Material(color_t(0.5, 0.5, 0.5), 1, 0, 0));
+	object->setMaterial(make_shared<Material>(color_t(0.5, 0.5, 0.5), 1, 0, 0));
 }
 
 bool TraceProgram::write()

@@ -7,6 +7,7 @@
 #include "Primitive.h"
 #include "common.h"
 #include "Raytracer.h"
+#include <memory>
 
 using namespace std;
 
@@ -17,9 +18,9 @@ class TraceProgram
 		unsigned int height;
 		string filename;
 		bool debug;
-		Raytracer* tracer;
+		shared_ptr<Raytracer> tracer;
 
-		OutputBitmap* canvas;
+		shared_ptr<OutputBitmap> canvas;
 
 		bool initCanvas();
 		bool hasEnding(string haystack, string needle);

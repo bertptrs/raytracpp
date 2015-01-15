@@ -10,10 +10,10 @@ color_t Primitive::colorAt(const vector3_t& pos) {
 }
 
 
-void Primitive::setMaterial(Material* m) {
+void Primitive::setMaterial(shared_ptr<Material> m) {
 	material = m;
 }
 
-Material* Primitive::getMaterial() {
+shared_ptr<const Material> Primitive::getMaterial() {
 	return material;
 }

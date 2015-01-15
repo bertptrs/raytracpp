@@ -1,20 +1,20 @@
 #include "OutputBitmap.h"
 #include <algorithm>
+#include <limits>
 
 using namespace std;
 
-const int OutputBitmap::CHANNEL_MAX = 255;
+const int OutputBitmap::CHANNEL_MAX = numeric_limits<unsigned char>::max();
 const int OutputBitmap::CHANNELS = 3;
 
 OutputBitmap::OutputBitmap(unsigned int width, unsigned int height)
 	: width(width), height(height)
 {
-	bitmap = new unsigned char[width * height * CHANNELS];
+	bitmap = vector<unsigned char>(width * height * CHANNELS);
 }
 
 OutputBitmap::~OutputBitmap()
 {
-	delete bitmap;
 }
 
 ostream& operator << (ostream& output, OutputBitmap* bitmap) {
@@ -34,14 +34,14 @@ void OutputBitmap::setPixel(unsigned int x, unsigned int y, const color_t& c) {
 }
 
 void OutputBitmap::getPixel(unsigned int x, unsigned int y, color_t& c) const {
-	unsigned char* color = getPixelArray(x, y);
+	auto color = getPixelArray(x, y);
 	c.channels.r = double(color[0] / CHANNEL_MAX);
 	c.channels.g = double(color[1] / CHANNEL_MAX);
 	c.channels.b = double(color[2] / CHANNEL_MAX);
 }
 
 color_t OutputBitmap::getPixel(unsigned int x, unsigned int y) const {
-	unsigned char* c = getPixelArray(x, y);
+	auto c = getPixelArray(x, y);
 	double r = double(c[0]) / CHANNEL_MAX;
 	double g = double(c[1]) / CHANNEL_MAX;
 	double b = double(c[2]) / CHANNEL_MAX;
@@ -49,9 +49,14 @@ color_t OutputBitmap::getPixel(unsigned int x, unsigned int y) const {
 	return color_t(r,g,b);
 }
 
-unsigned char* OutputBitmap::getPixelArray(unsigned int x, unsigned int y) const
+const unsigned char* OutputBitmap::getPixelArray(unsigned int x, unsigned int y) const
 {
-	return (unsigned char*) bitmap + (y * width + x) * 3;
+	return &bitmap[(y * width + x) * 3];
+}
+
+unsigned char* OutputBitmap::getPixelArray(unsigned int x, unsigned int y)
+{
+	return &bitmap[(y * width + x) * 3];
 }
 
 void OutputBitmap::drawTestImage()

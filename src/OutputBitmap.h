@@ -2,19 +2,21 @@
 #define OUTPUTBITMAP_H
 
 #include <iostream>
+#include <vector>
 #include "common.h"
 
-using std::ostream;
+using namespace std;
 
 class OutputBitmap {
 	protected:
-		unsigned char* bitmap;
+		vector<unsigned char> bitmap;
 
 		static const int CHANNEL_MAX;
 		static const int CHANNELS;
 
 		OutputBitmap(unsigned int width, unsigned int height);
-		unsigned char* getPixelArray(unsigned int x, unsigned int y) const;
+		const unsigned char* getPixelArray(unsigned int x, unsigned int y) const;
+		unsigned char* getPixelArray(unsigned int x, unsigned int y);
 
 	public:
 		const unsigned int width;

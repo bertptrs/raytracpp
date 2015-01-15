@@ -5,6 +5,7 @@
 #include "common.h"
 #include "OutputBitmap.h"
 #include "Primitive.h"
+#include <memory>
 
 using namespace std;
 
@@ -16,7 +17,7 @@ typedef enum {
 class Raytracer {
 	private:
 		static const int DEFAULT_DEPTH = 6;
-		OutputBitmap* const bitmap;
+		const shared_ptr<OutputBitmap> bitmap;
 		plist_t scene;
 		plist_t lights;
 		ray_t camera;
@@ -31,8 +32,8 @@ class Raytracer {
 		color_t getPixel(double sX, double sY);
 		void initLights();
 
-		Primitive* trace(const ray_t& ray, vector3_t& hit, vector3_t& normal, color_t& color_t);
-		Primitive* getNearest(const ray_t& ray) const;
+		shared_ptr<Primitive> trace(const ray_t& ray, vector3_t& hit, vector3_t& normal, color_t& color_t);
+		shared_ptr<Primitive> getNearest(const ray_t& ray) const;
 		inline color_t getDiffusion(const vector3_t& pos, const vector3_t& normal, const color_t& color);
 		inline color_t getReflection(const vector3_t& pos, const vector3_t& normal, const vector3_t& inAngle, const color_t& color);
 		inline color_t getRefraction(const vector3_t& pos, const vector3_t& normal, const vector3_t& inAngle, const color_t& color);
@@ -40,15 +41,13 @@ class Raytracer {
 
 
 	public:
-		Raytracer(OutputBitmap* bm);
+		Raytracer(shared_ptr<OutputBitmap> bitmap);
 		
 		void addObject(Primitive* object);
-		void removeObject(Primitive* object);
+		void addObject(shared_ptr<Primitive> object);
 		ray_t getCamera();
 
 		renderresult_t render();
-
-		void cleanup();
 };
 
 #endif
