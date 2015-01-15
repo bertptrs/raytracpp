@@ -20,7 +20,7 @@ hitresult_t Plane::intersect(const ray_t& ray, double& distance, vector3_t& hit,
 	}
 }
 
-void Plane::getLightPoints(forward_list<const vector3_t*>& lightList) const {
+void Plane::getLightPoints(forward_list<vector3_t>& lightList) const {
 	lightList.clear();
-	lightList.push_front(&anchor);
+	lightList.push_front(anchor);
 }

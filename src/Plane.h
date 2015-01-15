@@ -13,7 +13,7 @@ class Plane : public Primitive {
 
 	public:
 		Plane(const vector3_t& anchor, const vector3_t& normal);
-		void getLightPoints(forward_list<const vector3_t*>& lightList) const;
+		void getLightPoints(forward_list<vector3_t>& lightList) const;
 };
 
 #endif

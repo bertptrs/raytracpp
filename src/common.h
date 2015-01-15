@@ -15,6 +15,8 @@ class vector3_t {
 
 		vector3_t(double x=0, double y=0, double z=0);
 
+		static vector3_t random(double len = 1);
+
 		void set(double x, double y, double z);
 		void normalize();
 		double length() const;

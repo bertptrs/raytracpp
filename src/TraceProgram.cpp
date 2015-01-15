@@ -112,6 +112,8 @@ void TraceProgram::loadTestScene() {
 	tracer->addObject(object);
 	object->setMaterial(make_shared<Material>(color_t(0.5,0.7,0.5), 1, 0, 0));
 
+	auto lightMaterial = make_shared<Material>(color_t(1,1,1), 30);
+
 	object = make_shared<Sphere>(vector3_t(17,-4.5,4.5), 1.8);
 	tracer->addObject(object);
 	object->setMaterial(make_shared<Material>(color_t(1,0.3,0.3), 0.3, 0.7, 0));
@@ -120,9 +122,13 @@ void TraceProgram::loadTestScene() {
 	tracer->addObject(object);
 	object->setMaterial(make_shared<Material>(color_t(0.3,1,0.3), 1, 0, 0));
 
-	object = make_shared<Sphere>(vector3_t(13,3,3), 0.1);
+	object = make_shared<Sphere>(vector3_t(13,3,3), 0.5);
 	tracer->addObject(object);
-	object->setMaterial(make_shared<Material>(color_t(1,1,1), 50));
+	object->setMaterial(lightMaterial);
+
+	object = make_shared<Sphere>(vector3_t(13,0,8), 1);
+	tracer->addObject(object);
+	object->setMaterial(lightMaterial);
 
 	object = make_shared<Plane>(vector3_t(0, 0, -5), vector3_t(0, 0, 1));
 	tracer->addObject(object);

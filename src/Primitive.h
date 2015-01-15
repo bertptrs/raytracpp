@@ -29,7 +29,7 @@ class Primitive {
 
 		void setMaterial(shared_ptr<Material> material);
 		shared_ptr<const Material> getMaterial();
-		virtual void getLightPoints(std::forward_list<const vector3_t*>& lightList) const = 0;
+		virtual void getLightPoints(std::forward_list<vector3_t>& lightList) const = 0;
 
 };
 

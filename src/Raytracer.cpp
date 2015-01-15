@@ -92,21 +92,22 @@ shared_ptr<Primitive> Raytracer::getNearest(const ray_t& ray) const {
 
 color_t Raytracer::getDiffusion(const vector3_t& pos, const vector3_t& normal, const color_t& color) {
 	color_t diffuse;
-	forward_list<const vector3_t*> lightPoints;
+	forward_list<vector3_t> lightPoints;
 	for(auto light : lights) {
 		double strength = 0;
 		int points = 0;
 		light->getLightPoints(lightPoints);
-		for(const vector3_t* lightOrigin : lightPoints) {
+		for(vector3_t lightOrigin : lightPoints) {
 			points++;
 			ray_t shadowRay;
+			lightOrigin += vector3_t::random(0.2);
 			shadowRay.origin = pos + EPSILON * normal;
 			shadowRay.direction = -pos;
 			shadowRay.direction += lightOrigin;
 			shadowRay.direction.normalize();
 			double lightAngle = normal.dot(shadowRay.direction);
 			if(lightAngle > 0 && getNearest(shadowRay) == light) {
-				strength += lightAngle / (pos - *lightOrigin).squareLength();
+				strength += lightAngle / (pos - lightOrigin).squareLength();
 			}
 		}
 		strength *= light->getMaterial()->luminance / points;

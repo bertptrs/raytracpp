@@ -41,6 +41,13 @@ vector3_t vector3_t::cross(const vector3_t& b) const {
 	return vector3_t( coords.y * b.coords.z - coords.z * b.coords.y, coords.z * b.coords.x - coords.x * b.coords.z, coords.x * b.coords.y - coords.y * b.coords.x );
 }
 
+vector3_t vector3_t::random(double len) {
+	vector3_t v(rand() / 2 - RAND_MAX, 
+			rand() / 2 - RAND_MAX,
+			rand() / 2 - RAND_MAX);
+	return v * (len / v.length());
+}
+
 void vector3_t::operator += (const vector3_t& a) {
 	for(int i = 0; i < DIMENSION; i++)
 		cells[i] += a.cells[i];
