@@ -12,20 +12,7 @@ DEPDIR=.deps
 DIRS=$(OBJDIR)\
 	 $(DEPDIR)
 
-_OBJS=common.o\
-	 OutputBitmap.o\
-	 PPMImage.o\
-	 Primitive.o\
-	 Sphere.o\
-	 Raytracer.o\
-	 Material.o\
-	 Plane.o\
-	 JPEGImage.o\
-	 TraceProgram.o\
-	 tinyxml2.o\
-	 Scene.o\
-	 test.o
-
+_OBJS=$(patsubst %.cpp, %.o, $(notdir $(wildcard src/*.cpp)))
 DEPS=$(patsubst %.o, $(DEPDIR)/%.depend, $(_OBJS))
 OBJS=$(patsubst %, $(OBJDIR)/%, $(_OBJS))
 
